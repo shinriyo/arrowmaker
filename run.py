@@ -1,5 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+
+# 出力用のフォルダを作成
+output_folder = 'output'
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
 
 # 方角と角度の対応
 directions = [
@@ -11,31 +17,33 @@ directions = [
 
 # 各方向に対して個別に画像を生成
 for direction, angle in directions:
-    # 新しい図を作成、画像サイズを64x64に設定
-    fig, ax = plt.subplots(figsize=(2, 2), dpi=32)  # 64x64ピクセルに調整
+    # 新しい図を作成、32x32ピクセルの画像を設定
+    fig, ax = plt.subplots(figsize=(1, 1), dpi=32)  # 32x32ピクセルに調整
     ax.set_aspect('equal')
     ax.set_xlim(-1, 1)
     ax.set_ylim(-1, 1)
     ax.axis('off')
 
-    # 矢印の長さを画像に収める
-    arrow_length = 0.9  # 矢印の長さを0.9に設定して、収める
+    # 矢印の長さを設定
+    arrow_length = 0.6  # 矢印の全長
 
-    # 矢印の開始位置を中央に設定
-    x_start = 0
-    y_start = 0
+    # 矢印の中心が(0,0)になるように開始位置を計算
+    x_start = -np.cos(np.radians(angle)) * (arrow_length / 2)
+    y_start = -np.sin(np.radians(angle)) * (arrow_length / 2)
 
-    # 矢印の終点を計算
-    x_end = np.cos(np.radians(angle)) * arrow_length
-    y_end = np.sin(np.radians(angle)) * arrow_length
+    # 終点を計算（開始点から矢印の長さ分）
+    x_end = np.cos(np.radians(angle)) * (arrow_length / 2)
+    y_end = np.sin(np.radians(angle)) * (arrow_length / 2)
 
     # 矢印を描画
-    ax.arrow(x_start, y_start, x_end, y_end,
-              head_width=0.1, head_length=0.1, fc='black', ec='black')
+    ax.arrow(x_start, y_start, x_end - x_start, y_end - y_start,
+             head_width=0.1, head_length=0.1, fc='black', ec='black')
 
-    # 画像を保存 (小文字の方向名を使用)
-    plt.savefig(f'{direction}.png', dpi=300, bbox_inches='tight', pad_inches=0)
+    # 画像をoutputフォルダ内に保存 (小文字の方向名を使用)
+    output_path = os.path.join(output_folder, f'{direction}.png')
+    
+    # 保存時にdpiを適切に設定し、32x32ピクセルを確保
+    plt.savefig(output_path, dpi=32, bbox_inches=None, pad_inches=0)
     plt.close(fig)  # 画像を閉じる
 
-print("画像を保存しました。")
-
+print("画像をoutputフォルダに保存しました。")
