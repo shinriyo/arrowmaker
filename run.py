@@ -25,7 +25,7 @@ for direction, angle in directions:
     ax.axis('off')
 
     # 矢印の長さを設定
-    arrow_length = 0.6  # 矢印の全長
+    arrow_length = 1.5
 
     # 矢印の中心が(0,0)になるように開始位置を計算
     x_start = -np.cos(np.radians(angle)) * (arrow_length / 2)
@@ -35,15 +35,16 @@ for direction, angle in directions:
     x_end = np.cos(np.radians(angle)) * (arrow_length / 2)
     y_end = np.sin(np.radians(angle)) * (arrow_length / 2)
 
-    # 矢印を描画
+    # 矢印を描画（矢印の頭も大きくする）
     ax.arrow(x_start, y_start, x_end - x_start, y_end - y_start,
-             head_width=0.1, head_length=0.1, fc='black', ec='black')
+             head_width=0.15, head_length=0.15, fc='black', ec='black')
 
     # 画像をoutputフォルダ内に保存 (小文字の方向名を使用)
     output_path = os.path.join(output_folder, f'{direction}.png')
     
-    # 保存時にdpiを適切に設定し、32x32ピクセルを確保
-    plt.savefig(output_path, dpi=32, bbox_inches=None, pad_inches=0)
+    # 保存時にdpiを適切に設定
+    pixel = 64
+    plt.savefig(output_path, dpi=pixel, bbox_inches=None, pad_inches=0)
     plt.close(fig)  # 画像を閉じる
 
 print("画像をoutputフォルダに保存しました。")
