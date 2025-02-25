@@ -7,12 +7,18 @@ output_folder = 'output'
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
-# 方角と角度の対応
+# 方角と角度の対応（北から時計回りに）
 directions = [
-    ('n', 0), ('nne', 22.5), ('ne', 45), ('ene', 67.5),
-    ('e', 90), ('ese', 112.5), ('se', 135), ('sse', 157.5),
-    ('s', 180), ('ssw', 202.5), ('sw', 225), ('wsw', 247.5),
-    ('w', 270), ('wnw', 292.5), ('nw', 315), ('nnw', 337.5)
+    ('n', 0),    ('ne', 45),   ('e', 90),    ('se', 135),
+    ('s', 180),  ('sw', 225),  ('w', 270),   ('nw', 315)
+]
+
+# または16方位の場合：
+directions = [
+    ('n', 0),    ('nne', 22.5),  ('ne', 45),   ('ene', 67.5),
+    ('e', 90),   ('ese', 112.5), ('se', 135),  ('sse', 157.5),
+    ('s', 180),  ('ssw', 202.5), ('sw', 225),  ('wsw', 247.5),
+    ('w', 270),  ('wnw', 292.5), ('nw', 315),  ('nnw', 337.5)
 ]
 
 # 各方向に対して個別に画像を生成
@@ -27,13 +33,16 @@ for direction, angle in directions:
     # 矢印の長さを設定
     arrow_length = 1.5
 
+    # 角度を補正（北を上向きに、時計回りに）
+    adjusted_angle = 90 - angle  # 角度の計算を修正
+
     # 矢印の中心が(0,0)になるように開始位置を計算
-    x_start = -np.cos(np.radians(angle)) * (arrow_length / 2)
-    y_start = -np.sin(np.radians(angle)) * (arrow_length / 2)
+    x_start = -np.cos(np.radians(adjusted_angle)) * (arrow_length / 2)
+    y_start = -np.sin(np.radians(adjusted_angle)) * (arrow_length / 2)
 
     # 終点を計算（開始点から矢印の長さ分）
-    x_end = np.cos(np.radians(angle)) * (arrow_length / 2)
-    y_end = np.sin(np.radians(angle)) * (arrow_length / 2)
+    x_end = np.cos(np.radians(adjusted_angle)) * (arrow_length / 2)
+    y_end = np.sin(np.radians(adjusted_angle)) * (arrow_length / 2)
 
     # 矢印を描画（矢印の頭も大きくする）
     ax.arrow(x_start, y_start, x_end - x_start, y_end - y_start,
